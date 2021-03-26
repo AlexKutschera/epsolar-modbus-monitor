@@ -1,0 +1,21 @@
+{
+  "name": "epsolar-modbus-monitor",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "jsmodbus": "^4.0.5",
+    "serialport": "^9.0.7"
+  },
+  "devDependencies": {
+    "typescript": "^4.2.3",
+    "@types/node": "^14.14.35",
+    "@types/serialport": "^8.0.1"
+  }
+}
