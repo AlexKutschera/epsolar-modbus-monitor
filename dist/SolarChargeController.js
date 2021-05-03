@@ -80,8 +80,9 @@ var BatteryVoltageMode;
 })(BatteryVoltageMode = exports.BatteryVoltageMode || (exports.BatteryVoltageMode = {}));
 var SolarChargeController = /** @class */ (function (_super) {
     __extends(SolarChargeController, _super);
-    function SolarChargeController(path, address) {
+    function SolarChargeController(path, address, debug) {
         if (address === void 0) { address = 0x01; }
+        if (debug === void 0) { debug = false; }
         var _this = _super.call(this) || this;
         _this.ratedData = {
             /**
@@ -318,7 +319,8 @@ var SolarChargeController = /** @class */ (function (_super) {
                             return [4 /*yield*/, this.client.readHoldingRegisters(0x9000, 1)];
                         case 1:
                             response = (_b.sent()).response;
-                            console.log(response.body.valuesAsBuffer);
+                            if (this.debug)
+                                console.log(response.body.valuesAsBuffer);
                             _a = BatteryType;
                             return [4 /*yield*/, this.readHoldingRegisterInt16(0x9000)];
                         case 2: return [2 /*return*/, _a[_b.sent()]];
@@ -454,7 +456,8 @@ var SolarChargeController = /** @class */ (function (_super) {
                             return [4 /*yield*/, this.client.readHoldingRegisters(0x9013, 3)];
                         case 1:
                             response = (_a.sent()).response;
-                            console.log(response.body.valuesAsBuffer);
+                            if (this.debug)
+                                console.log(response.body.valuesAsBuffer);
                             date = new Date();
                             date.setSeconds(response.body.valuesAsBuffer.readInt8(1));
                             date.setMinutes(response.body.valuesAsBuffer.readInt8(0));
@@ -912,6 +915,7 @@ var SolarChargeController = /** @class */ (function (_super) {
             stopBits: 1,
             parity: "none"
         });
+        _this.debug = debug;
         _this.client = new jsmodbus_1.ModbusRTUClient(_this.socket, address);
         _this.socket.on("open", function () { return _this.emit("ready"); });
         _this.socket.on("error", function (e) { return _this.emit("error", e); });
@@ -931,7 +935,8 @@ var SolarChargeController = /** @class */ (function (_super) {
                         return [4 /*yield*/, this.client.readInputRegisters(start, 1)];
                     case 1:
                         response = (_a.sent()).response;
-                        console.log(response.body.valuesAsBuffer, response.body.valuesAsArray);
+                        if (this.debug)
+                            console.log(response.body.valuesAsBuffer, response.body.valuesAsArray);
                         return [2 /*return*/, response.body.valuesAsBuffer.readInt16BE() / multiple];
                     case 2:
                         e_16 = _a.sent();
@@ -952,7 +957,8 @@ var SolarChargeController = /** @class */ (function (_super) {
                         return [4 /*yield*/, this.client.readInputRegisters(start, 2)];
                     case 1:
                         response = (_a.sent()).response;
-                        console.log(response.body.valuesAsBuffer, response.body.valuesAsArray);
+                        if (this.debug)
+                            console.log(response.body.valuesAsBuffer, response.body.valuesAsArray);
                         return [2 /*return*/, Buffer.from([response.body.valuesAsBuffer.readInt16BE(1), response.body.valuesAsBuffer.readInt16BE(0)]).readInt32BE() / multiple];
                     case 2:
                         e_17 = _a.sent();
@@ -973,7 +979,8 @@ var SolarChargeController = /** @class */ (function (_super) {
                         return [4 /*yield*/, this.client.readInputRegisters(start, 1)];
                     case 1:
                         response = (_a.sent()).response;
-                        console.log(response.body.valuesAsBuffer, response.body.valuesAsArray);
+                        if (this.debug)
+                            console.log(response.body.valuesAsBuffer, response.body.valuesAsArray);
                         return [2 /*return*/, response.body.valuesAsBuffer.readUInt16BE() / multiple];
                     case 2:
                         e_18 = _a.sent();
@@ -994,7 +1001,8 @@ var SolarChargeController = /** @class */ (function (_super) {
                         return [4 /*yield*/, this.client.readInputRegisters(start, 2)];
                     case 1:
                         response = (_a.sent()).response;
-                        console.log(response.body.valuesAsBuffer, response.body.valuesAsArray);
+                        if (this.debug)
+                            console.log(response.body.valuesAsBuffer, response.body.valuesAsArray);
                         return [2 /*return*/, Buffer.from([
                                 response.body.valuesAsBuffer.readInt8(2),
                                 response.body.valuesAsBuffer.readInt8(3),
@@ -1020,7 +1028,8 @@ var SolarChargeController = /** @class */ (function (_super) {
                         return [4 /*yield*/, this.client.readHoldingRegisters(start, 1)];
                     case 1:
                         response = (_a.sent()).response;
-                        console.log(response.body.valuesAsBuffer, response.body.valuesAsArray);
+                        if (this.debug)
+                            console.log(response.body.valuesAsBuffer, response.body.valuesAsArray);
                         return [2 /*return*/, response.body.valuesAsBuffer.readInt16BE() / multiple];
                     case 2:
                         e_20 = _a.sent();
@@ -1041,7 +1050,8 @@ var SolarChargeController = /** @class */ (function (_super) {
                         return [4 /*yield*/, this.client.readHoldingRegisters(start, 2)];
                     case 1:
                         response = (_a.sent()).response;
-                        console.log(response.body.valuesAsBuffer, response.body.valuesAsArray);
+                        if (this.debug)
+                            console.log(response.body.valuesAsBuffer, response.body.valuesAsArray);
                         return [2 /*return*/, Buffer.from([response.body.valuesAsBuffer.readInt16BE(1), response.body.valuesAsBuffer.readInt16BE(0)]).readInt32BE() / multiple];
                     case 2:
                         e_21 = _a.sent();
@@ -1062,7 +1072,8 @@ var SolarChargeController = /** @class */ (function (_super) {
                         return [4 /*yield*/, this.client.readHoldingRegisters(start, 1)];
                     case 1:
                         response = (_a.sent()).response;
-                        console.log(response.body.valuesAsBuffer, response.body.valuesAsArray);
+                        if (this.debug)
+                            console.log(response.body.valuesAsBuffer, response.body.valuesAsArray);
                         return [2 /*return*/, response.body.valuesAsBuffer.readUInt16BE() / multiple];
                     case 2:
                         e_22 = _a.sent();
@@ -1083,7 +1094,8 @@ var SolarChargeController = /** @class */ (function (_super) {
                         return [4 /*yield*/, this.client.readHoldingRegisters(start, 2)];
                     case 1:
                         response = (_a.sent()).response;
-                        console.log(response.body.valuesAsBuffer, response.body.valuesAsArray);
+                        if (this.debug)
+                            console.log(response.body.valuesAsBuffer, response.body.valuesAsArray);
                         return [2 /*return*/, Buffer.from([
                                 response.body.valuesAsBuffer.readInt8(2),
                                 response.body.valuesAsBuffer.readInt8(3),
@@ -1127,7 +1139,8 @@ var SolarChargeController = /** @class */ (function (_super) {
                         return [4 /*yield*/, this.client.readCoils(start, 1)];
                     case 1:
                         response = (_a.sent()).response;
-                        console.log(response.body.valuesAsBuffer, response.body.valuesAsArray);
+                        if (this.debug)
+                            console.log(response.body.valuesAsBuffer, response.body.valuesAsArray);
                         return [2 /*return*/, !!response.body.valuesAsBuffer.readInt8()];
                     case 2:
                         e_25 = _a.sent();
@@ -1166,7 +1179,8 @@ var SolarChargeController = /** @class */ (function (_super) {
                         return [4 /*yield*/, this.client.readDiscreteInputs(start, 1)];
                     case 1:
                         response = (_a.sent()).response;
-                        console.log(response.body.valuesAsBuffer, response.body.valuesAsArray);
+                        if (this.debug)
+                            console.log(response.body.valuesAsBuffer, response.body.valuesAsArray);
                         return [2 /*return*/, !!response.body.valuesAsBuffer.readInt8()];
                     case 2:
                         e_27 = _a.sent();

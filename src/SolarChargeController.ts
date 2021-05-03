@@ -26,8 +26,9 @@ export default class SolarChargeController extends EventEmitter {
 
     private readonly socket;
     private client;
+    private debug;
 
-    constructor(path: string, address: number = 0x01) {
+    constructor(path: string, address: number = 0x01, debug: boolean = false) {
         super()
         this.socket = new SerialPort(path, {
             baudRate: 115200,
@@ -35,6 +36,7 @@ export default class SolarChargeController extends EventEmitter {
             stopBits: 1,
             parity: "none"
         })
+        this.debug = debug;
         this.client = new ModbusRTUClient(this.socket, address)
         this.socket.on("open", () => this.emit("ready"))
         this.socket.on("error", (e) => this.emit("error", e))
@@ -47,7 +49,7 @@ export default class SolarChargeController extends EventEmitter {
     private async readInputRegisterInt16(start: number, multiple: number = 1) {
         try {
             const {response} = await this.client.readInputRegisters(start, 1)
-            console.log(response.body.valuesAsBuffer, response.body.valuesAsArray)
+            if (this.debug) console.log(response.body.valuesAsBuffer, response.body.valuesAsArray)
             return response.body.valuesAsBuffer.readInt16BE() / multiple
         } catch (e) {
             throw e
@@ -57,7 +59,7 @@ export default class SolarChargeController extends EventEmitter {
     private async readInputRegisterInt32(start: number, multiple: number = 1) {
         try {
             const {response} = await this.client.readInputRegisters(start, 2)
-            console.log(response.body.valuesAsBuffer, response.body.valuesAsArray)
+            if (this.debug) console.log(response.body.valuesAsBuffer, response.body.valuesAsArray)
             return Buffer.from([response.body.valuesAsBuffer.readInt16BE(1), response.body.valuesAsBuffer.readInt16BE(0)]).readInt32BE() / multiple
         } catch (e) {
             throw e
@@ -67,7 +69,7 @@ export default class SolarChargeController extends EventEmitter {
     private async readInputRegisterUInt16(start: number, multiple: number = 1) {
         try {
             const {response} = await this.client.readInputRegisters(start, 1)
-            console.log(response.body.valuesAsBuffer, response.body.valuesAsArray)
+            if (this.debug) console.log(response.body.valuesAsBuffer, response.body.valuesAsArray)
             return response.body.valuesAsBuffer.readUInt16BE() / multiple
         } catch (e) {
             throw e
@@ -77,7 +79,7 @@ export default class SolarChargeController extends EventEmitter {
     private async readInputRegisterUInt32(start: number, multiple: number = 1) {
         try {
             const {response} = await this.client.readInputRegisters(start, 2)
-            console.log(response.body.valuesAsBuffer, response.body.valuesAsArray)
+            if (this.debug) console.log(response.body.valuesAsBuffer, response.body.valuesAsArray)
             return Buffer.from([
                 response.body.valuesAsBuffer.readInt8(2),
                 response.body.valuesAsBuffer.readInt8(3),
@@ -92,7 +94,7 @@ export default class SolarChargeController extends EventEmitter {
     private async readHoldingRegisterInt16(start: number, multiple: number = 1) {
         try {
             const {response} = await this.client.readHoldingRegisters(start, 1)
-            console.log(response.body.valuesAsBuffer, response.body.valuesAsArray)
+            if (this.debug) console.log(response.body.valuesAsBuffer, response.body.valuesAsArray)
             return response.body.valuesAsBuffer.readInt16BE() / multiple
         } catch (e) {
             throw e
@@ -102,7 +104,7 @@ export default class SolarChargeController extends EventEmitter {
     private async readHoldingRegisterInt32(start: number, multiple: number = 1) {
         try {
             const {response} = await this.client.readHoldingRegisters(start, 2)
-            console.log(response.body.valuesAsBuffer, response.body.valuesAsArray)
+            if (this.debug) console.log(response.body.valuesAsBuffer, response.body.valuesAsArray)
             return Buffer.from([response.body.valuesAsBuffer.readInt16BE(1), response.body.valuesAsBuffer.readInt16BE(0)]).readInt32BE() / multiple
         } catch (e) {
             throw e
@@ -112,7 +114,7 @@ export default class SolarChargeController extends EventEmitter {
     private async readHoldingRegisterUInt16(start: number, multiple: number = 1) {
         try {
             const {response} = await this.client.readHoldingRegisters(start, 1)
-            console.log(response.body.valuesAsBuffer, response.body.valuesAsArray)
+            if (this.debug) console.log(response.body.valuesAsBuffer, response.body.valuesAsArray)
             return response.body.valuesAsBuffer.readUInt16BE() / multiple
         } catch (e) {
             throw e
@@ -122,7 +124,7 @@ export default class SolarChargeController extends EventEmitter {
     private async readHoldingRegisterUInt32(start: number, multiple: number = 1) {
         try {
             const {response} = await this.client.readHoldingRegisters(start, 2)
-            console.log(response.body.valuesAsBuffer, response.body.valuesAsArray)
+            if (this.debug) console.log(response.body.valuesAsBuffer, response.body.valuesAsArray)
             return Buffer.from([
                 response.body.valuesAsBuffer.readInt8(2),
                 response.body.valuesAsBuffer.readInt8(3),
@@ -145,7 +147,7 @@ export default class SolarChargeController extends EventEmitter {
     private async readCoil(start: number) {
         try {
             const {response} = await this.client.readCoils(start, 1)
-            console.log(response.body.valuesAsBuffer, response.body.valuesAsArray)
+            if (this.debug) console.log(response.body.valuesAsBuffer, response.body.valuesAsArray)
             return !!response.body.valuesAsBuffer.readInt8()
         } catch (e) {
             throw e
@@ -163,7 +165,7 @@ export default class SolarChargeController extends EventEmitter {
     private async readDiscreteInput(start: number) {
         try {
             const {response} = await this.client.readDiscreteInputs(start, 1)
-            console.log(response.body.valuesAsBuffer, response.body.valuesAsArray)
+            if (this.debug) console.log(response.body.valuesAsBuffer, response.body.valuesAsArray)
             return !!response.body.valuesAsBuffer.readInt8()
         } catch (e) {
             throw e
@@ -379,7 +381,7 @@ export default class SolarChargeController extends EventEmitter {
         batteryType: async () => {
             try {
                 const {response} = await this.client.readHoldingRegisters(0x9000, 1)
-                console.log(response.body.valuesAsBuffer)
+                if (this.debug) console.log(response.body.valuesAsBuffer)
                 return BatteryType[await this.readHoldingRegisterInt16(0x9000)]
             } catch (e) {
                 throw e
@@ -504,7 +506,7 @@ export default class SolarChargeController extends EventEmitter {
         rtc: async () => {
             try {
                 const {response} = await this.client.readHoldingRegisters(0x9013, 3)
-                console.log(response.body.valuesAsBuffer)
+                if (this.debug) console.log(response.body.valuesAsBuffer)
                 let date = new Date()
                 date.setSeconds(response.body.valuesAsBuffer.readInt8(1))
                 date.setMinutes(response.body.valuesAsBuffer.readInt8(0))

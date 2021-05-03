@@ -4,6 +4,7 @@
     "esModuleInterop": true,
     "target": "es5",
     "sourceMap": true,
+    "declaration": true,
     "outDir": "dist"
   },
   "exclude": [
