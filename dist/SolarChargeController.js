@@ -909,12 +909,18 @@ var SolarChargeController = /** @class */ (function (_super) {
              */
             night: function () { return _this.readDiscreteInput(0x200C); }
         };
-        _this.socket = new serialport_1.default(path, {
-            baudRate: 115200,
-            dataBits: 8,
-            stopBits: 1,
-            parity: "none"
-        });
+        if (SolarChargeController.sockets.find(function (e) { return e.path == path; })) {
+            _this.socket = SolarChargeController.sockets.find(function (e) { return e.path == path; }).socket;
+        }
+        else {
+            _this.socket = new serialport_1.default(path, {
+                baudRate: 115200,
+                dataBits: 8,
+                stopBits: 1,
+                parity: "none"
+            });
+            SolarChargeController.sockets.push({ path: path, socket: _this.socket });
+        }
         _this.debug = debug;
         _this.client = new jsmodbus_1.ModbusRTUClient(_this.socket, address);
         _this.socket.on("open", function () { return _this.emit("ready"); });
@@ -1197,6 +1203,7 @@ var SolarChargeController = /** @class */ (function (_super) {
             });
         });
     };
+    SolarChargeController.sockets = [];
     return SolarChargeController;
 }(events_1.EventEmitter));
 exports.default = SolarChargeController;

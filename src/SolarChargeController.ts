@@ -24,18 +24,25 @@ export enum BatteryVoltageMode {
 
 export default class SolarChargeController extends EventEmitter {
 
+    private static sockets = []
+
     private readonly socket;
     private client;
     private debug;
 
     constructor(path: string, address: number = 0x01, debug: boolean = false) {
         super()
-        this.socket = new SerialPort(path, {
-            baudRate: 115200,
-            dataBits: 8,
-            stopBits: 1,
-            parity: "none"
-        })
+        if (SolarChargeController.sockets.find(e => e.path == path)) {
+            this.socket = SolarChargeController.sockets.find(e => e.path == path).socket
+        } else {
+            this.socket = new SerialPort(path, {
+                baudRate: 115200,
+                dataBits: 8,
+                stopBits: 1,
+                parity: "none"
+            })
+            SolarChargeController.sockets.push({path: path, socket: this.socket})
+        }
         this.debug = debug;
         this.client = new ModbusRTUClient(this.socket, address)
         this.socket.on("open", () => this.emit("ready"))

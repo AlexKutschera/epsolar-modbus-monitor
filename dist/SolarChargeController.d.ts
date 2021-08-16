@@ -19,6 +19,7 @@ export declare enum BatteryVoltageMode {
     _24V = 2
 }
 export default class SolarChargeController extends EventEmitter {
+    private static sockets;
     private readonly socket;
     private client;
     private debug;
